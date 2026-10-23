@@ -1,0 +1,13 @@
+[package]
+name = "incc"
+version = "0.1.0"
+edition = "2021"
+description = "Self-checking, interface-aware incremental compiler for a restricted C-like language"
+
+[dependencies]
+blake3 = "1"
+
+[profile.release]
+debug = false
+lto = true
+codegen-units = 1

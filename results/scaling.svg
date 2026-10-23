@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+<text x="300.0" y="20" text-anchor="middle" font-size="16">Total compile time (ms) vs N</text>
+<text x="120" y="380" text-anchor="middle" font-size="12">N=50</text>
+<rect x="60" y="288.6156304147258" width="40" height="51.38436958527419" fill="#d62728" />
+<text x="80" y="285.6156304147258" text-anchor="middle" font-size="9">33</text>
+<rect x="105" y="289.7781228200455" width="40" height="50.22187717995453" fill="#1f77b4" />
+<text x="125" y="286.7781228200455" text-anchor="middle" font-size="9">32</text>
+<rect x="150" y="285.6715947703594" width="40" height="54.32840522964062" fill="#2ca02c" />
+<text x="170" y="282.6715947703594" text-anchor="middle" font-size="9">34</text>
+<text x="280" y="380" text-anchor="middle" font-size="12">N=200</text>
+<rect x="220" y="272.7203582438849" width="40" height="67.27964175611511" fill="#d62728" />
+<text x="240" y="269.7203582438849" text-anchor="middle" font-size="9">43</text>
+<rect x="265" y="276.198384302077" width="40" height="63.80161569792298" fill="#1f77b4" />
+<text x="285" y="273.198384302077" text-anchor="middle" font-size="9">41</text>
+<rect x="310" y="270.7214383762011" width="40" height="69.27856162379892" fill="#2ca02c" />
+<text x="330" y="267.7214383762011" text-anchor="middle" font-size="9">44</text>
+<text x="440" y="380" text-anchor="middle" font-size="12">N=1000</text>
+<rect x="380" y="60.0" width="40" height="280.0" fill="#d62728" />
+<text x="400" y="57.0" text-anchor="middle" font-size="9">178</text>
+<rect x="425" y="148.91649227030314" width="40" height="191.08350772969686" fill="#1f77b4" />
+<text x="445" y="145.91649227030314" text-anchor="middle" font-size="9">121</text>
+<rect x="470" y="143.19381624248973" width="40" height="196.80618375751027" fill="#2ca02c" />
+<text x="490" y="140.19381624248973" text-anchor="middle" font-size="9">125</text>
+<rect x="60" y="30" width="12" height="12" fill="#d62728" />
+<text x="78" y="40" font-size="11">clean</text>
+<rect x="60" y="48" width="12" height="12" fill="#1f77b4" />
+<text x="78" y="58" font-size="11">body_edit</text>
+<rect x="60" y="66" width="12" height="12" fill="#2ca02c" />
+<text x="78" y="76" font-size="11">noop</text>
+</svg>

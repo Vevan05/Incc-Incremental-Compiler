@@ -1,0 +1,16 @@
+int count_primes(int limit) {
+    int count = 0;
+    int n = 2;
+    while (n <= limit) {
+        int is_p = 1;
+        int d = 2;
+        while (d * d <= n) {
+            if (n % d == 0) { is_p = 0; }
+            d = d + 1;
+        }
+        if (is_p == 1) { count = count + 1; }
+        n = n + 1;
+    }
+    return count;
+}
+int main() { return count_primes(30); }

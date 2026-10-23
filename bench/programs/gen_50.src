@@ -1,0 +1,671 @@
+// generated
+
+int G = 0;
+
+const int C = 7;
+
+int f0() {
+    int x = 0;
+    x = x + 3;
+    x = x + 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 4;
+    x = x + 1;
+    x = x + 5;
+    return x;
+}
+
+int f1() {
+    int x = 0;
+    x = x + f0();
+    x = x + 5;
+    x = x + 1;
+    while (x < 5) { x = x + 1; }
+    x = x + 4;
+    x = x * 2;
+    x = x + 3;
+    x = x + 4;
+    return x;
+}
+
+int f2() {
+    int x = 0;
+    x = x * 2;
+    x = x * 2;
+    x = x + 1;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + f1();
+    x = x + 3;
+    while (x < 5) { x = x + 1; }
+    x = x + f1();
+    return x;
+}
+
+int f3() {
+    int x = 0;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 2;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    x = x * 2;
+    return x;
+}
+
+int f4(int p0) {
+    int x = 0;
+    x = x + 3;
+    x = x + 3;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 2;
+    x = x + f1();
+    x = x + 4;
+    x = x + 5;
+    return x;
+}
+
+int f5() {
+    int x = 0;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 1;
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    x = x + 5;
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f6(int p0) {
+    int x = 0;
+    x = x + 4;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    x = x + 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + f5();
+    x = x + f4(x);
+    return x;
+}
+
+int f7(int p0) {
+    int x = 0;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x + 4;
+    x = x + 1;
+    while (x < 5) { x = x + 1; }
+    x = x + 2;
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    return x;
+}
+
+int f8() {
+    int x = 0;
+    x = x * 2;
+    x = x + f7(x);
+    x = x + f0();
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 5;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    return x;
+}
+
+int f9(int p0) {
+    int x = 0;
+    x = x * 2;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 5;
+    while (x < 5) { x = x + 1; }
+    x = x + f1();
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f10(int p0) {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + f3();
+    x = x + 2;
+    x = x + f8();
+    while (x < 5) { x = x + 1; }
+    x = x + f7(x);
+    x = x + 3;
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f11(int p0) {
+    int x = 0;
+    x = x + 2;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 4;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + f2();
+    x = x + 4;
+    return x;
+}
+
+int f12() {
+    int x = 0;
+    x = x + 5;
+    x = x * 2;
+    x = x + 5;
+    while (x < 5) { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x * 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    return x;
+}
+
+int f13(int p0) {
+    int x = 0;
+    x = x * 2;
+    x = x + f1();
+    x = x + 1;
+    x = x * 2;
+    x = x + f3();
+    x = x + f0();
+    x = x + 1;
+    x = x + 1;
+    return x;
+}
+
+int f14(int p0) {
+    int x = 0;
+    x = x + 2;
+    x = x + 4;
+    x = x + 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + f3();
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f15() {
+    int x = 0;
+    x = x + 4;
+    x = x * 2;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x + 1;
+    x = x + 3;
+    while (x < 5) { x = x + 1; }
+    x = x + 2;
+    return x;
+}
+
+int f16() {
+    int x = 0;
+    x = x + f4(x);
+    x = x * 2;
+    x = x + 2;
+    while (x < 5) { x = x + 1; }
+    x = x + 5;
+    x = x + 5;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f17() {
+    int x = 0;
+    x = x + 4;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 1;
+    while (x < 5) { x = x + 1; }
+    x = x + 4;
+    x = x + 5;
+    return x;
+}
+
+int f18(int p0) {
+    int x = 0;
+    x = x + 3;
+    x = x + 1;
+    x = x + f17();
+    x = x + 3;
+    x = x + 5;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x + f1();
+    return x;
+}
+
+int f19() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + 1;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 1;
+    while (x < 5) { x = x + 1; }
+    x = x + f18(x);
+    x = x + f2();
+    x = x * 2;
+    return x;
+}
+
+int f20(int p0) {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + 3;
+    x = x + 4;
+    x = x + 3;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 5;
+    return x;
+}
+
+int f21() {
+    int x = 0;
+    x = x + 2;
+    x = x + f4(x);
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    x = x + 5;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    return x;
+}
+
+int f22() {
+    int x = 0;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + f21();
+    x = x + 2;
+    x = x + 1;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 3;
+    x = x + f10(x);
+    x = x + 3;
+    return x;
+}
+
+int f23(int p0) {
+    int x = 0;
+    x = x + 1;
+    x = x + 4;
+    while (x < 5) { x = x + 1; }
+    x = x + 3;
+    while (x < 5) { x = x + 1; }
+    x = x + f8();
+    x = x + 4;
+    x = x + f13(x);
+    return x;
+}
+
+int f24() {
+    int x = 0;
+    x = x + 2;
+    x = x + f11(x);
+    x = x + f4(x);
+    x = x * 2;
+    x = x + 3;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f25(int p0) {
+    int x = 0;
+    x = x + 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x * 2;
+    x = x + f13(x);
+    while (x < 5) { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 2;
+    return x;
+}
+
+int f26() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + 3;
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 2;
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f27() {
+    int x = 0;
+    x = x * 2;
+    x = x + 4;
+    x = x + 4;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 2;
+    x = x * 2;
+    return x;
+}
+
+int f28(int p0) {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 5;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x + f0();
+    x = x + 3;
+    x = x + 3;
+    return x;
+}
+
+int f29() {
+    int x = 0;
+    x = x + 4;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x + 5;
+    x = x + 1;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    return x;
+}
+
+int f30() {
+    int x = 0;
+    x = x + f25(x);
+    x = x + f23(x);
+    while (x < 5) { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 4;
+    x = x + 3;
+    x = x + f21();
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f31(int p0) {
+    int x = 0;
+    x = x + f21();
+    x = x * 2;
+    x = x * 2;
+    x = x + 2;
+    x = x + 4;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + f9(x);
+    return x;
+}
+
+int f32(int p0) {
+    int x = 0;
+    x = x + f0();
+    x = x * 2;
+    x = x + 5;
+    x = x + f20(x);
+    x = x * 2;
+    x = x * 2;
+    x = x + 4;
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f33() {
+    int x = 0;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 5;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 2;
+    x = x + 1;
+    return x;
+}
+
+int f34() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + f4(x);
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x + f24();
+    x = x * 2;
+    x = x + 1;
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f35() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + 5;
+    x = x * 2;
+    x = x + f7(x);
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f36(int p0) {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + f32(x);
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    x = x + 4;
+    x = x * 2;
+    return x;
+}
+
+int f37() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + 5;
+    x = x * 2;
+    x = x + 4;
+    x = x + 3;
+    x = x + 3;
+    x = x * 2;
+    x = x + f8();
+    return x;
+}
+
+int f38() {
+    int x = 0;
+    x = x + 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 4;
+    x = x * 2;
+    x = x * 2;
+    x = x + 4;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f39() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    x = x + 3;
+    x = x + 4;
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    return x;
+}
+
+int f40() {
+    int x = 0;
+    x = x * 2;
+    x = x + 4;
+    x = x + 3;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f41() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + f1();
+    x = x + 4;
+    x = x + 4;
+    x = x + 3;
+    x = x * 2;
+    x = x + 3;
+    x = x * 2;
+    return x;
+}
+
+int f42(int p0) {
+    int x = 0;
+    x = x + 4;
+    x = x + 1;
+    x = x * 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 3;
+    x = x + 1;
+    while (x < 5) { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    return x;
+}
+
+int f43() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + 1;
+    x = x + f15();
+    x = x + 1;
+    x = x + f13(x);
+    x = x * 2;
+    x = x + 3;
+    x = x + 5;
+    return x;
+}
+
+int f44() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + 3;
+    x = x + 1;
+    while (x < 5) { x = x + 1; }
+    x = x + f24();
+    x = x * 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + 2;
+    return x;
+}
+
+int f45() {
+    int x = 0;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x * 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + f2();
+    x = x * 2;
+    x = x * 2;
+    return x;
+}
+
+int f46(int p0) {
+    int x = 0;
+    x = x + 3;
+    x = x + 4;
+    while (x < 5) { x = x + 1; }
+    x = x + 3;
+    x = x + f29();
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x * 2;
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    return x;
+}
+
+int f47(int p0) {
+    int x = 0;
+    x = x + f34();
+    while (x < 5) { x = x + 1; }
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    x = x + f20(x);
+    while (x < 5) { x = x + 1; }
+    while (x < 5) { x = x + 1; }
+    x = x + 4;
+    return x;
+}
+
+int f48() {
+    int x = 0;
+    while (x < 5) { x = x + 1; }
+    x = x + f42(x);
+    x = x * 2;
+    x = x + 3;
+    x = x + 2;
+    x = x * 2;
+    x = x + 3;
+    while (x < 5) { x = x + 1; }
+    return x;
+}
+
+int f49(int p0) {
+    int x = 0;
+    x = x + f33();
+    while (x < 5) { x = x + 1; }
+    x = x + 4;
+    x = x * 2;
+    while (x < 5) { x = x + 1; }
+    if (x > 10) { x = x - 1; } else { x = x + 1; }
+    x = x + f31(x);
+    x = x * 2;
+    return x;
+}
+
+int main() {
+    int s = 0;
+    s = s + f0();
+    s = s + f1();
+    s = s + f2();
+    s = s + f3();
+    s = s + f4(1);
+    s = s + f5();
+    s = s + f6(1);
+    s = s + f7(1);
+    s = s + f8();
+    s = s + f9(1);
+    return s;
+}
+

@@ -1,0 +1,6 @@
+int factorial(int n) {
+    int r = 1;
+    while (n > 1) { r = r * n; n = n - 1; }
+    return r;
+}
+int main() { return factorial(5); }
