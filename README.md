@@ -99,7 +99,7 @@ int add(int a, int b) { return a + b; }
 int main() { return add(LIMIT, 5); }
 ```
 
-## Architecture — compiler pipeline
+## Architecture - compiler pipeline
 
 The compiler is split into a cheap whole-program front end and a cached
 per-function back half.
