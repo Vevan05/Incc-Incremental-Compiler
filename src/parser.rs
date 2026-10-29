@@ -268,7 +268,7 @@ impl Parser {
     }
 }
 
-fn eval_const_expr(e: &Expr, consts: &std::collections::BTreeMap<String, i64>) -> Option<i64> {
+pub fn eval_const_expr(e: &Expr, consts: &std::collections::BTreeMap<String, i64>) -> Option<i64> {
     match e {
         Expr::IntLit(n) => Some(*n),
         Expr::BoolLit(b) => Some(if *b { 1 } else { 0 }),

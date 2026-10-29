@@ -9,10 +9,9 @@ def mutate(src):
         return src.replace(';', '; ', 3)
     if m == 'const':
         # change a const int value
-        def repl(match):
-            v=int(match.group(1)); return f"const int {match.group(2)} = {v+random.randint(1,5)};"
+        n = None
         new, n = re.subn(r'const int (\w+) = (\d+);', lambda mm: f"const int {mm.group(1)} = {int(mm.group(2))+random.randint(1,5)};", src, count=1)
-        return new if n>0 else None
+        return new if n > 0 else None
     if m == 'addfunc':
         # add a new unused function before main
         idx = src.rfind('int main()')

@@ -14,6 +14,19 @@ impl Key {
     pub fn to_hex(&self) -> String {
         self.0.iter().map(|b| format!("{b:02x}")).collect()
     }
+
+    /// Inverse of `to_hex`; `None` unless the string is exactly 64 hex chars.
+    pub fn from_hex(s: &str) -> Option<Key> {
+        let chars: Vec<char> = s.chars().collect();
+        if chars.len() != 64 { return None; }
+        let mut bytes = [0u8; 32];
+        for (i, pair) in chars.chunks(2).enumerate() {
+            let hi = pair[0].to_digit(16)?;
+            let lo = pair[1].to_digit(16)?;
+            bytes[i] = ((hi << 4) | lo) as u8;
+        }
+        Some(Key(bytes))
+    }
 }
 
 pub struct KeyBuilder {

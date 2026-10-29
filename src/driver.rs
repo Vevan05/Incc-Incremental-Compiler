@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use crate::ast::{canon_function_body, Program};
 use crate::parser::parse;
 use crate::audit::AuditReport;
-use crate::cache::Cache;
+use crate::cache::{Cache, ManifestEntry};
 use crate::codegen::{compile_function, globals_assembly};
 use crate::deps::{canon_dep, dependencies};
 use crate::fingerprint::KeyBuilder;
@@ -32,7 +32,9 @@ pub fn build(opts: &BuildOptions, metrics: &mut Metrics) -> Result<()> {
     let src = fs::read_to_string(&opts.input)?;
     let program: Program = metrics.time("parse", || parse(&src))?;
 
-    let _ = metrics.time("collect", || ());
+    // Declaration collection: validate globals (constant initializers, types)
+    // before any per-function work depends on them.
+    metrics.time("collect", || crate::sema::check_globals(&program))?;
 
     let mut funcs: Vec<&crate::ast::Function> = program.functions.iter().collect();
     funcs.sort_by(|a, b| a.sig.name.cmp(&b.sig.name));
@@ -41,6 +43,12 @@ pub fn build(opts: &BuildOptions, metrics: &mut Metrics) -> Result<()> {
         Some(d) => Some(Cache::open(d)?),
         None => None,
     };
+    // Snapshot the manifest before this build puts anything, so audit can tell
+    // which artifacts were stored by previous runs (for over-invalidation).
+    let prev_manifest: Vec<ManifestEntry> = cache
+        .as_ref()
+        .map(|c| c.read_manifest())
+        .unwrap_or_default();
 
     // Phase 1: compute keys and cache status.
     struct FnInfo<'a> {
@@ -85,6 +93,7 @@ pub fn build(opts: &BuildOptions, metrics: &mut Metrics) -> Result<()> {
     // Phase 2: compile misses.
     let mut compiled: std::collections::BTreeMap<usize, Vec<u8>> = std::collections::BTreeMap::new();
     if opts.parallel && miss_indices.len() > 1 {
+        let mut worker_failed = false;
         std::thread::scope(|scope| {
             let mut handles = Vec::new();
             for &idx in &miss_indices {
@@ -94,20 +103,31 @@ pub fn build(opts: &BuildOptions, metrics: &mut Metrics) -> Result<()> {
                 let handle = scope.spawn(move || {
                     let mut fir = lower_function(f, program_ref);
                     optimize(&mut fir);
-                    let art = compile_function(&fir, program_ref, OPTIONS);
-                    art.bytes
+                    compile_function(&fir, program_ref, OPTIONS).bytes
                 });
                 handles.push((idx, handle));
             }
             for (idx, handle) in handles {
-                if let Ok(bytes) = handle.join() {
-                    if let Some(c) = &cache {
-                        let _ = c.put(&infos[idx].key, &bytes);
+                match handle.join() {
+                    Ok(bytes) => {
+                        if let Some(cache) = &cache {
+                            let _ = cache.put(&infos[idx].key, &bytes);
+                            if !opts.file_level {
+                                let _ = cache.record(&infos[idx].key, &infos[idx].func.sig.name);
+                            }
+                        }
+                        compiled.insert(idx, bytes);
                     }
-                    compiled.insert(idx, bytes);
+                    Err(_) => worker_failed = true,
                 }
             }
         });
+        if worker_failed {
+            return Err(Error::Io(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "a parallel compile worker panicked",
+            )));
+        }
     } else {
         for &idx in &miss_indices {
             let info = &infos[idx];
@@ -116,8 +136,11 @@ pub fn build(opts: &BuildOptions, metrics: &mut Metrics) -> Result<()> {
             optimize(&mut fir);
             let art = metrics.time("compile", || compile_function(&fir, &program, OPTIONS));
             let bytes = art.bytes;
-            if let Some(c) = &cache {
-                let _ = c.put(&info.key, &bytes);
+            if let Some(cache) = &cache {
+                let _ = cache.put(&info.key, &bytes);
+                if !opts.file_level {
+                    let _ = cache.record(&info.key, &f.sig.name);
+                }
             }
             compiled.insert(idx, bytes);
         }
@@ -234,8 +257,32 @@ pub fn build(opts: &BuildOptions, metrics: &mut Metrics) -> Result<()> {
                 // record as mismatched output via a sentinel function name
                 report.mismatched_functions.push("<output>".to_string());
             }
+            // Over-invalidation oracle: functions this build *rebuilt* whose
+            // artifact is byte-identical to one a previous run already stored
+            // under a different key (same function name). Every miss had a
+            // suitable artifact in the cache all along, so rebuilding it was
+            // unnecessary. Requires deterministic compilation, which audit
+            // verifies above.
+            if cache.is_some() {
+                for &idx in &miss_indices {
+                    let func = infos[idx].func;
+                    let Some(new_bytes) = clean_artifacts.iter().find(|(n, _)| *n == func.sig.name)
+                        .map(|(_, b)| b.clone()) else { continue };
+                    for entry in &prev_manifest {
+                        if entry.name != func.sig.name || entry.key == infos[idx].key { continue; }
+                        let Some(bytes) = cache.as_ref().and_then(|c| c.get(&entry.key)) else { continue };
+                        if bytes == new_bytes {
+                            report.over_invalidated.push(func.sig.name.clone());
+                            break;
+                        }
+                    }
+                }
+            }
             if !report.passed() {
                 return Err(Error::Sema(format!("audit failed: {:?}", report.mismatched_functions)));
+            }
+            if !report.over_invalidated.is_empty() {
+                eprintln!("audit over-invalidation: {:?}", report.over_invalidated);
             }
             Ok(())
         });

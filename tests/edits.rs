@@ -26,8 +26,9 @@ fn run_incremental(before: &str, after: &str) -> (i32, usize) {
         .and_then(|s| s.split_whitespace().next())
         .and_then(|s| s.parse().ok())
         .unwrap_or(0);
-    // run output to ensure correctness not checked here
-    (0, misses)
+    // run the rebuilt executable so callers can check program output too
+    let run = Command::new(&out2).status().unwrap();
+    (run.code().unwrap_or(-1), misses)
 }
 
 #[test]
@@ -100,11 +101,15 @@ fn edit_signature_rebuilds_caller() {
 }
 
 #[test]
-fn edit_global_type_rebuilds() {
-    let before = "int g = 0;\nint f() { return g; }\nint main() { return f(); }\n";
-    let after = "bool g = 0;\nint f() { return g; }\nint main() { return f(); }\n"; // type mismatch expected? f returns int but g bool -> compile error
-    // Instead change mutability only (mutable flag) by using a separate global? mutability not in source syntax (always mutable). Skip mutability; test value change via const already.
-    let _ = (before, after);
+fn edit_global_init_zero_misses() {
+    // Changing a global's initial value changes only the .data section
+    // emitted at link time; the functions that read it are byte-identical
+    // (movq g(%rip)) and must be reused. Program output must change.
+    let before = "int g = 0;\nint f() { return g + 1; }\nint main() { return f(); }\n";
+    let after = "int g = 5;\nint f() { return g + 1; }\nint main() { return f(); }\n";
+    let (exit, misses) = run_incremental(before, after);
+    assert_eq!(misses, 0, "init edit must not rebuild functions");
+    assert_eq!(exit, 6, "g+1 with g=5");
 }
 
 #[test]

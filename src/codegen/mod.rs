@@ -1,7 +1,7 @@
 //! Phase 1/2: backend (x86-64 assembly text).
 use std::collections::BTreeMap;
 use crate::ir::{FunctionIR, Instr, Value};
-use crate::ast::{BinOp, Expr, Program, UnOp};
+use crate::ast::{BinOp, Program, UnOp};
 
 pub struct Artifact {
     pub name: String,
@@ -118,14 +118,13 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                 _ => out.push_str(&format!("    movq {}, %rax\n", slot_str(slots, l))),
             }
             // need r in rcx or immediate
-            let opstr = match op {
+            match op {
                 BinOp::Add => {
                     match r {
                         Value::ConstInt(n) => out.push_str(&format!("    addq ${}, %rax\n", n)),
                         Value::ConstBool(b) => out.push_str(&format!("    addq ${}, %rax\n", if *b{1}else{0})),
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    addq %rcx, %rax\n"); }
                     }
-                    ""
                 }
                 BinOp::Sub => {
                     match r {
@@ -133,7 +132,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         Value::ConstBool(b) => out.push_str(&format!("    subq ${}, %rax\n", if *b{1}else{0})),
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    subq %rcx, %rax\n"); }
                     }
-                    ""
                 }
                 BinOp::Mul => {
                     match r {
@@ -141,7 +139,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         Value::ConstBool(b) => out.push_str(&format!("    imulq ${}, %rax\n", if *b{1}else{0})),
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    imulq %rcx, %rax\n"); }
                     }
-                    ""
                 }
                 BinOp::Div => {
                     // rax / r -> rax
@@ -152,7 +149,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))),
                     }
                     out.push_str("    cqto\n    idivq %rcx\n");
-                    ""
                 }
                 BinOp::Mod => {
                     match r {
@@ -161,7 +157,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))),
                     }
                     out.push_str("    cqto\n    idivq %rcx\n    movq %rdx, %rax\n");
-                    ""
                 }
                 BinOp::Eq => {
                     // compare rax with r
@@ -171,7 +166,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    cmpq %rcx, %rax\n"); }
                     }
                     out.push_str("    sete %al\n    movzbq %al, %rax\n");
-                    ""
                 }
                 BinOp::Ne => {
                     match r {
@@ -180,7 +174,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    cmpq %rcx, %rax\n"); }
                     }
                     out.push_str("    setne %al\n    movzbq %al, %rax\n");
-                    ""
                 }
                 BinOp::Lt => {
                     match r {
@@ -189,7 +182,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    cmpq %rcx, %rax\n"); }
                     }
                     out.push_str("    setl %al\n    movzbq %al, %rax\n");
-                    ""
                 }
                 BinOp::Le => {
                     match r {
@@ -198,7 +190,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    cmpq %rcx, %rax\n"); }
                     }
                     out.push_str("    setle %al\n    movzbq %al, %rax\n");
-                    ""
                 }
                 BinOp::Gt => {
                     match r {
@@ -207,7 +198,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    cmpq %rcx, %rax\n"); }
                     }
                     out.push_str("    setg %al\n    movzbq %al, %rax\n");
-                    ""
                 }
                 BinOp::Ge => {
                     match r {
@@ -216,7 +206,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    cmpq %rcx, %rax\n"); }
                     }
                     out.push_str("    setge %al\n    movzbq %al, %rax\n");
-                    ""
                 }
                 BinOp::And => {
                     // normalize rax to 0/1
@@ -227,7 +216,6 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    testq %rcx, %rcx\n    setne %cl\n    movzbq %cl, %rcx\n"); }
                     }
                     out.push_str("    andq %rcx, %rax\n");
-                    ""
                 }
                 BinOp::Or => {
                     out.push_str("    testq %rax, %rax\n    setne %al\n    movzbq %al, %rax\n");
@@ -237,10 +225,8 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
                         _ => { out.push_str(&format!("    movq {}, %rcx\n", slot_str(slots, r))); out.push_str("    testq %rcx, %rcx\n    setne %cl\n    movzbq %cl, %rcx\n"); }
                     }
                     out.push_str("    orq %rcx, %rax\n");
-                    ""
                 }
-            };
-            let _ = opstr;
+            }
             out.push_str(&format!("    movq %rax, {}\n", slot_str(slots, dst)));
         }
         Instr::UnOp { op, dst, src } => {
@@ -309,17 +295,28 @@ fn gen_instr(instr: &Instr, slots: &BTreeMap<String, usize>, out: &mut String, _
     }
 }
 
-// globals assembly helper
+// globals assembly: uninitialized globals go in .bss (default 0); globals with
+// a constant initializer go in .data with their value. `sema::check_globals`
+// has already rejected non-constant initializers, so the fold cannot fail here.
 pub fn globals_assembly(program: &Program) -> String {
+    let consts: BTreeMap<String, i64> =
+        program.consts.iter().map(|c| (c.name.clone(), c.value)).collect();
     let mut out = String::new();
-    out.push_str("    .bss\n");
+    let mut has_data = false;
     for g in &program.globals {
-        out.push_str(&format!("    .comm {}, 8, 8\n", g.name));
+        let value = g.init.as_ref()
+            .map(|e| crate::parser::eval_const_expr(e, &consts).unwrap_or(0));
+        match value {
+            Some(v) => {
+                if !has_data {
+                    out.push_str("    .data\n");
+                    has_data = true;
+                }
+                out.push_str(&format!("    .balign 8\n{h}:\n    .quad {v}\n", h = g.name));
+            }
+            None => out.push_str(&format!("    .comm {}, 8, 8\n", g.name)),
+        }
     }
-    // const values not stored
-    let _ = program;
+    // const values are folded into use sites; nothing to emit for them.
     out
 }
-
-// evaluate global init not handled in assembly; default zero.
-pub fn _unused(e: &Expr) { let _ = e; }

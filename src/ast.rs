@@ -168,10 +168,12 @@ pub fn canon_program_consts(c: &ConstDecl) -> Vec<u8> {
     out
 }
 
+/// Canonical dependency encoding of a global: name + type + mutability.
+/// NOTE: the initializer is deliberately excluded. Function artifacts contain
+/// only `movq global(%rip)` loads — the current global value is emitted in the
+/// link section on every build — so an init edit must not invalidate readers.
 pub fn canon_program_global(g: &GlobalDecl) -> Vec<u8> {
     let mut out = Vec::new();
     push_str(&mut out, &g.name); canon_type(&g.ty, &mut out); push_u8(&mut out, if g.mutable { 1 } else { 0 });
-    // include init expr if present
-    match &g.init { Some(e) => { push_u8(&mut out, 1); canon_expr(e, &mut out); }, None => { push_u8(&mut out, 0); } }
     out
 }

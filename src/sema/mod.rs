@@ -183,3 +183,22 @@ pub fn dependencies(f: &Function, program: &Program) -> Result<std::collections:
     check_function(f, program, &mut view)?;
     Ok(view.into_dependencies())
 }
+
+/// Program-level check of global declarations: the initializer (if any) must
+/// fold to a compile-time constant whose type matches the declared type.
+/// Constant initializers are emitted into the `.data` section at link time;
+/// anything runtime-dependent is a semantic error, not a silent zero.
+pub fn check_globals(program: &Program) -> Result<(), Error> {
+    let consts: std::collections::BTreeMap<String, i64> =
+        program.consts.iter().map(|c| (c.name.clone(), c.value)).collect();
+    for g in &program.globals {
+        if let Some(e) = &g.init {
+            let v = crate::parser::eval_const_expr(e, &consts)
+                .ok_or_else(|| Error::Sema(format!("global {} initializer must be constant", g.name)))?;
+            if g.ty == Type::Bool && v != 0 && v != 1 {
+                return Err(Error::Sema(format!("bool initializer of {} out of range", g.name)));
+            }
+        }
+    }
+    Ok(())
+}

@@ -8,6 +8,13 @@ use std::path::{Path, PathBuf};
 use crate::fingerprint::Key;
 use crate::Result;
 
+/// One manifest line: `<key hex> <function name>`.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ManifestEntry {
+    pub key: Key,
+    pub name: String,
+}
+
 pub struct Cache {
     root: PathBuf,
     limit_bytes: usize,
@@ -27,6 +34,38 @@ impl Cache {
     fn path_for(&self, key: &Key) -> PathBuf {
         let hex = key.to_hex();
         self.root.join(&hex[..2]).join(&hex[2..])
+    }
+
+    fn manifest_path(&self) -> PathBuf {
+        self.root.join("manifest.txt")
+    }
+
+    /// Read the manifest listing function names ever stored, keyed by cache key.
+    /// Used by audit mode to detect over-invalidation (rebuilt but unchanged).
+    /// Damaged lines are skipped so a torn manifest degrades to fewer entries.
+    pub fn read_manifest(&self) -> Vec<ManifestEntry> {
+        let Ok(text) = fs::read_to_string(self.manifest_path()) else { return Vec::new() };
+        let mut entries = std::collections::BTreeSet::new();
+        for line in text.lines() {
+            let (hex, name) = match line.split_once(' ') {
+                Some((h, n)) => (h, n),
+                None => continue,
+            };
+            if let Some(key) = Key::from_hex(hex) {
+                entries.insert(ManifestEntry { key, name: name.to_string() });
+            }
+        }
+        entries.into_iter().collect()
+    }
+
+    /// Append `<key> <name>` to the manifest. Idempotent: an entry already
+    /// present (same key) is not written again.
+    pub fn record(&self, key: &Key, name: &str) -> Result<()> {
+        let already = self.read_manifest().iter().any(|e| e.key == *key);
+        if already { return Ok(()); }
+        let mut f = fs::OpenOptions::new().create(true).append(true).open(self.manifest_path())?;
+        writeln!(f, "{} {}", key.to_hex(), name)?;
+        Ok(())
     }
 
     /// Returns the artifact bytes on a valid hit; `None` on miss or corruption.
@@ -61,7 +100,7 @@ impl Cache {
                 for e in rd.flatten() {
                     let p = e.path();
                     if p.is_dir() { walk(&p, out); }
-                    else if p.is_file() { out.push(p); }
+                    else if p.is_file() && p.file_name() != Some(std::ffi::OsStr::new("manifest.txt")) { out.push(p); }
                 }
             }
         }
@@ -128,5 +167,21 @@ mod tests {
         c.put(&k, b"x").unwrap();
         c.clear().unwrap();
         assert!(c.get(&k).is_none());
+    }
+
+    #[test]
+    fn manifest_roundtrip_and_idempotent() {
+        let a = KeyBuilder::new("v", "t", "o").field(b"one").finish();
+        let b = KeyBuilder::new("v", "t", "o").field(b"two").finish();
+        let c = Cache::open(tmp_root("manifest")).unwrap();
+        c.record(&a, "f0").unwrap();
+        c.record(&a, "f0").unwrap(); // duplicate key ignored
+        c.record(&b, "f1").unwrap();
+        let entries = c.read_manifest();
+        assert_eq!(entries.len(), 2);
+        assert!(entries.iter().any(|e| e.key == a && e.name == "f0"));
+        assert!(entries.iter().any(|e| e.key == b && e.name == "f1"));
+        assert_eq!(Key::from_hex(&a.to_hex()), Some(a));
+        assert!(Key::from_hex("zz").is_none());
     }
 }

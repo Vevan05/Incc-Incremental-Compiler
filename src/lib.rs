@@ -1,5 +1,5 @@
 //! incc: self-checking, interface-aware incremental compiler.
-//! See IMPLEMENTATION_PLAN.md for the phase each module belongs to.
+//! The spec and phase plan are documented in the project README.
 
 pub mod ast;
 pub mod audit;
